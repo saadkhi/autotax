@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import connectDB from './config/db.js';
+import userRoutes from './routes/userRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,7 +15,10 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 const port = process.env.PORT || 5000;
 
-connectDB();
+// Connect to MongoDB (non-blocking - server will start even if MongoDB is not available)
+connectDB().catch(err => {
+  console.error('Initial MongoDB connection failed, but server will continue...');
+});
 
 const app = express();
 
@@ -28,8 +32,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.get('/', (req, res) => {
-  res.send('API is running....');
-});
+app.use('/api/users', userRoutes);
 
 app.listen(port, () => console.log(`server is running on port ${port}`));
