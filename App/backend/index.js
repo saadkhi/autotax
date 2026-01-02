@@ -13,6 +13,14 @@ const __dirname = path.dirname(__filename);
 
 // Load .env from project root (two levels up from backend/index.js)
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+// Validate required environment variables
+if (!process.env.JWT_SECRET) {
+  console.error('❌ ERROR: JWT_SECRET is not defined in environment variables.');
+  console.error('Please add JWT_SECRET to your .env file at the project root.');
+  process.exit(1);
+}
+
 const port = process.env.PORT || 5000;
 
 // Connect to MongoDB (non-blocking - server will start even if MongoDB is not available)
